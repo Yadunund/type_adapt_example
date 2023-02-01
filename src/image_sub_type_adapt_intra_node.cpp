@@ -26,7 +26,7 @@ ImageSubTypeAdaptIntraNode::ImageSubTypeAdaptIntraNode(rclcpp::NodeOptions optio
 : rclcpp::Node("image_sub_type_adapt_intra", options.use_intra_process_comms(true))
 {
   auto callback =
-    [this](std::unique_ptr<type_adapt_example::ROSCvMatContainer> msg) -> void
+    [this](const type_adapt_example::ROSCvMatContainer& msg) -> void
     {
       (void)msg;
       RCLCPP_INFO(this->get_logger(), "Image received");

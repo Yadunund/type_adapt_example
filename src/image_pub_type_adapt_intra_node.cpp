@@ -38,7 +38,7 @@ ImagePubTypeAdaptIntraNode::ImagePubTypeAdaptIntraNode(rclcpp::NodeOptions optio
       header.frame_id = "image";
       header.stamp = this->now();
 
-      auto container = std::make_unique<type_adapt_example::ROSCvMatContainer>(frame, header);
+      auto container = type_adapt_example::ROSCvMatContainer(std::move(frame), std::move(header));
       RCLCPP_INFO(this->get_logger(), "Publishing");
       pub_->publish(std::move(container));
     };

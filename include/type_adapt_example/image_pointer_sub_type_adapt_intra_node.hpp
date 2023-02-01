@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef TYPE_ADAPT_EXAMPLE__IMAGE_PUB_TYPE_ADAPT_NODE_HPP_
-#define TYPE_ADAPT_EXAMPLE__IMAGE_PUB_TYPE_ADAPT_NODE_HPP_
+#ifndef TYPE_ADAPT_EXAMPLE__IMAGE_SUB_TYPE_ADAPT_INTRA_NODE_HPP_
+#define TYPE_ADAPT_EXAMPLE__IMAGE_SUB_TYPE_ADAPT_INTRA_NODE_HPP_
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/image.hpp"
@@ -28,19 +28,18 @@ RCLCPP_USING_CUSTOM_TYPE_AS_ROS_MESSAGE_TYPE(
 namespace type_adapt_example
 {
 
-class ImagePubTypeAdaptNode : public rclcpp::Node
+class ImagePointerSubTypeAdaptIntraNode : public rclcpp::Node
 {
 public:
   TYPE_ADAPT_EXAMPLE_PUBLIC
-  explicit ImagePubTypeAdaptNode(const rclcpp::NodeOptions & options);
+  explicit ImagePointerSubTypeAdaptIntraNode(rclcpp::NodeOptions options);
 
-  virtual ~ImagePubTypeAdaptNode();
+  virtual ~ImagePointerSubTypeAdaptIntraNode();
 
 private:
-  rclcpp::Publisher<type_adapt_example::ROSCvMatContainer>::SharedPtr pub_;
-  rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::Subscription<type_adapt_example::ROSCvMatContainer>::SharedPtr sub_;
 };
 
 }  // namespace type_adapt_example
 
-#endif  // TYPE_ADAPT_EXAMPLE__IMAGE_PUB_TYPE_ADAPT_NODE_HPP_
+#endif  // TYPE_ADAPT_EXAMPLE__IMAGE_SUB_TYPE_ADAPT_INTRA_NODE_HPP_

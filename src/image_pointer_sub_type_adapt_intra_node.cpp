@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "type_adapt_example/image_sub_no_type_adapt_node.hpp"
+#include "type_adapt_example/cv_mat_sensor_msgs_image_type_adapter.hpp"
+#include "type_adapt_example/image_pointer_sub_type_adapt_intra_node.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
@@ -21,23 +22,23 @@
 namespace type_adapt_example
 {
 
-ImageSubNoTypeAdaptNode::ImageSubNoTypeAdaptNode(const rclcpp::NodeOptions & options)
-: rclcpp::Node("image_sub_no_type_adapt", options)
+ImagePointerSubTypeAdaptIntraNode::ImagePointerSubTypeAdaptIntraNode(rclcpp::NodeOptions options)
+: rclcpp::Node("image_sub_type_adapt_intra", options.use_intra_process_comms(true))
 {
   auto callback =
-    [this](sensor_msgs::msg::Image::UniquePtr msg) -> void
+    [this](std::shared_ptr<const type_adapt_example::ROSCvMatContainer> msg) -> void
     {
       (void)msg;
       RCLCPP_INFO(this->get_logger(), "Image received");
     };
 
-  sub_ = create_subscription<sensor_msgs::msg::Image>("image", 10, callback);
+  sub_ = create_subscription<type_adapt_example::ROSCvMatContainer>("image", 10, callback);
 }
 
-ImageSubNoTypeAdaptNode::~ImageSubNoTypeAdaptNode()
+ImagePointerSubTypeAdaptIntraNode::~ImagePointerSubTypeAdaptIntraNode()
 {
 }
 
 }  // namespace type_adapt_example
 
-RCLCPP_COMPONENTS_REGISTER_NODE(type_adapt_example::ImageSubNoTypeAdaptNode)
+RCLCPP_COMPONENTS_REGISTER_NODE(type_adapt_example::ImagePointerSubTypeAdaptIntraNode)

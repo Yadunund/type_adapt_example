@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Launch the image pub and sub with type adaptation with composition."""
+"""Launch the image pub and sub with type adaptation with composition and intraprocess."""
 
 from launch import LaunchDescription
 from launch_ros.actions import ComposableNodeContainer
@@ -21,20 +21,30 @@ from launch_ros.descriptions import ComposableNode
 
 def generate_launch_description():
     container = ComposableNodeContainer(
-        name='image_type_adapt_container',
+        name='image_type_adapt_intra_container',
         namespace='',
         package='rclcpp_components',
         executable='component_container',
         composable_node_descriptions=[
             ComposableNode(
                 package='type_adapt_example',
-                plugin='type_adapt_example::ImageSubTypeAdaptNode',
-                name='image_sub_type_adapt',
+                plugin='type_adapt_example::ImagePointerSubTypeAdaptIntraNode',
+                name='image_sub_type_adapt_intra_1',
             ),
             ComposableNode(
                 package='type_adapt_example',
-                plugin='type_adapt_example::ImagePubTypeAdaptNode',
-                name='image_pub_type_adapt',
+                plugin='type_adapt_example::ImagePointerSubTypeAdaptIntraNode',
+                name='image_sub_type_adapt_intra_2',
+            ),
+            ComposableNode(
+                package='type_adapt_example',
+                plugin='type_adapt_example::ImagePointerSubTypeAdaptIntraNode',
+                name='image_sub_type_adapt_intra_3',
+            ),                        
+            ComposableNode(
+                package='type_adapt_example',
+                plugin='type_adapt_example::ImagePointerPubTypeAdaptIntraNode',
+                name='image_pub_type_adapt_intra',
             ),
         ],
         output='both',

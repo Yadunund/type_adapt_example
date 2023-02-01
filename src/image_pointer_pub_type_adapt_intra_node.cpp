@@ -15,7 +15,8 @@
 #include <chrono>
 #include <memory>
 
-#include "type_adapt_example/image_pub_no_type_adapt_node.hpp"
+#include "type_adapt_example/cv_mat_sensor_msgs_image_type_adapter.hpp"
+#include "type_adapt_example/image_pointer_pub_type_adapt_intra_node.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
@@ -24,37 +25,35 @@
 namespace type_adapt_example
 {
 
-ImagePubNoTypeAdaptNode::ImagePubNoTypeAdaptNode(const rclcpp::NodeOptions & options)
-: rclcpp::Node("image_pub_no_type_adapt", options)
+ImagePointerPubTypeAdaptIntraNode::ImagePointerPubTypeAdaptIntraNode(rclcpp::NodeOptions options)
+: rclcpp::Node("image_pub_type_adapt_intra", options.use_intra_process_comms(true))
 {
   auto publish_message =
     [this]() -> void
     {
-      auto msg = std::make_unique<sensor_msgs::msg::Image>();
-      // Some example resolutions:
-      // D435i RGB - 1920x1080 @ 30 frames/sec
-      // D435i Depth - 1280x720 @ 90 frames/sec
-      msg->width = 1920;  // width of D435i RGB
-      msg->height = 1080;  // height of D435i
-      msg->step = msg->width * 3;  // assuming 8 bpp
-      msg->encoding = "rgb8";
-      size_t size = msg->step * msg->height;
-      msg->data.resize(size);
-      // TODO(clalancette): Probably fill in some data
-      msg->header.frame_id = "image";
-      msg->header.stamp = this->now();
+      cv::Mat frame(1920, 1080, CV_8UC3);
+      // TODO(clalancette): Fill this out
+
+      std_msgs::msg::Header header;
+      header.frame_id = "image";
+      header.stamp = this->now();
+
+      auto container =
+        std::make_unique<type_adapt_example::ROSCvMatContainer>(
+          std::move(frame), std::move(header));
       RCLCPP_INFO(this->get_logger(), "Publishing");
-      pub_->publish(std::move(msg));
+      pub_->publish(std::move(container));
     };
-  pub_ = this->create_publisher<sensor_msgs::msg::Image>("image", 10);
+
+  pub_ = this->create_publisher<type_adapt_example::ROSCvMatContainer>("image", 10);
 
   timer_ = this->create_wall_timer(std::chrono::milliseconds(33), publish_message);
 }
 
-ImagePubNoTypeAdaptNode::~ImagePubNoTypeAdaptNode()
+ImagePointerPubTypeAdaptIntraNode::~ImagePointerPubTypeAdaptIntraNode()
 {
 }
 
 }  // namespace type_adapt_example
 
-RCLCPP_COMPONENTS_REGISTER_NODE(type_adapt_example::ImagePubNoTypeAdaptNode)
+RCLCPP_COMPONENTS_REGISTER_NODE(type_adapt_example::ImagePointerPubTypeAdaptIntraNode)
